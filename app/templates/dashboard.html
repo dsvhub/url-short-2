@@ -6,7 +6,7 @@
 <body>
     <h1>Welcome, {{ current_user.username }}!</h1>
     <nav>
-        <a href="{{ url_for('main.shorten_url') }}">Shorten URL (Auto)</a> |
+        <a href="{{ url_for('main.shorten') }}">Shorten URL (Auto)</a> |
         <a href="{{ url_for('main.create_link') }}">Create Custom Link</a> |
         <a href="{{ url_for('main.links_dashboard') }}">My Links</a> |
         <a href="{{ url_for('main.edit_user', user_id=current_user.id) }}">Edit Profile</a> |
