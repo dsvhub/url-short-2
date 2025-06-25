@@ -1,0 +1,16 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>URL Shortener</title>
+</head>
+<body>
+    <h1>Shorten Your URL</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.original_url.label }} {{ form.original_url(size=50) }}<br>
+        {{ form.submit() }}
+    </form>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Links</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome, {{ current_user.username }}!</h1>
+    <nav>
+        <a href="{{ url_for('main.create_link') }}">Create New Link</a> |
+        <a href="{{ url_for('main.shorten_url') }}">Shorten URL (Auto)</a> |
+        <a href="{{ url_for('main.edit_user', user_id=current_user.id) }}">Edit Profile</a> |
+        <a href="{{ url_for('main.logout') }}">Logout</a>
+    </nav>
+    <hr>
+    <h2>Your Links</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="flash-{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if links %}
+        <table class="links-table">
+            <thead>
+                <tr>
+                    <th>Original URL</th>
+                    <th>Shortened URL</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td><a href="{{ link.original_url }}" target="_blank">{{ link.original_url | truncate(50) }}</a></td>
+                        <td><a href="{{ url_for('main.redirect_to_url', short_code=link.short_code, _external=True) }}" target="_blank">{{ link.short_code }}</a></td>
+                        <td>
+                            <a href="{{ url_for('main.edit_link', link_id=link.id) }}" class="action-link">Edit</a>
+                            <form action="{{ url_for('main.delete_link', link_id=link.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="action-button" onclick="return confirm('Delete this link?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No links created yet.</p>
+    {% endif %}
+</body>
+</html>

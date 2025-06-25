@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Link</title>
+</head>
+<body>
+    <h1>Create New Link</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p style="color: {{ 'green' if category == 'success' else 'red' }};">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.original_url.label }}<br>
+            {{ form.original_url(size=50) }}<br>
+            {% for error in form.original_url.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.short_code.label }}<br>
+            {{ form.short_code(size=10) }}<br>
+            {% for error in form.short_code.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <nav>
+        <a href="{{ url_for('main.links_dashboard') }}">View All Links</a> |
+        <a href="{{ url_for('main.dashboard') }}">Back to Dashboard</a>
+    </nav>
+</body>
+</html>

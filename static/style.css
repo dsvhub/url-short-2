@@ -1,0 +1,122 @@
+/* General page styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+h1, h2 {
+    color: #2c3e50;
+}
+
+nav {
+    margin-bottom: 20px;
+}
+
+nav a {
+    margin-right: 10px;
+    color: #3498db;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Flash messages */
+.flash-success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.flash-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.flash-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+/* Table styling */
+.links-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.links-table th,
+.links-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.links-table th {
+    background-color: #2c3e50;
+    color: #fff;
+    font-weight: bold;
+}
+
+.links-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.links-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.links-table a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.links-table a:hover {
+    text-decoration: underline;
+}
+
+/* Action buttons and links */
+.action-link {
+    color: #28a745;
+    margin-right: 10px;
+}
+
+.action-link:hover {
+    color: #218838;
+    text-decoration: underline;
+}
+
+.action-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background-color: #c82333;
+}

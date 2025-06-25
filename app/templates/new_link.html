@@ -1,0 +1,6 @@
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.original_url.label }} {{ form.original_url(size=80) }}<br>
+    {{ form.short_code.label }} {{ form.short_code(size=20) }}<br>
+    {{ form.submit() }}
+</form>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ current_user.username }}!</h1>
+    <nav>
+        <a href="{{ url_for('main.shorten_url') }}">Shorten URL (Auto)</a> |
+        <a href="{{ url_for('main.create_link') }}">Create Custom Link</a> |
+        <a href="{{ url_for('main.links_dashboard') }}">My Links</a> |
+        <a href="{{ url_for('main.edit_user', user_id=current_user.id) }}">Edit Profile</a> |
+        <a href="{{ url_for('main.logout') }}">Logout</a>
+    </nav>
+    <hr>
+    <p>This is your dashboard. You can shorten URLs, view your links, manage your profile, or log out from here.</p>
+</body>
+</html>
