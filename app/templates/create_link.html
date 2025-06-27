@@ -1,38 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Create Link</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <h1>Create New Link</h1>
+<body class="container my-5">
+    <h1 class="mb-4">Create New Link</h1>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <p style="color: {{ 'green' if category == 'success' else 'red' }};">{{ message }}</p>
+                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form method="POST">
+
+    <form method="POST" class="mb-4">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.original_url.label }}<br>
-            {{ form.original_url(size=50) }}<br>
+
+        <div class="mb-3">
+            {{ form.original_url.label(class_="form-label") }}
+            {{ form.original_url(class_="form-control", placeholder="https://example.com") }}
             {% for error in form.original_url.errors %}
-                <span style="color:red;">{{ error }}</span>
+                <div class="text-danger">{{ error }}</div>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.short_code.label }}<br>
-            {{ form.short_code(size=10) }}<br>
+        </div>
+
+        <div class="mb-3">
+            {{ form.short_code.label(class_="form-label") }}
+            {{ form.short_code(class_="form-control", placeholder="custom123") }}
             {% for error in form.short_code.errors %}
-                <span style="color:red;">{{ error }}</span>
+                <div class="text-danger">{{ error }}</div>
             {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
     </form>
+
     <nav>
-        <a href="{{ url_for('main.links_dashboard') }}">View All Links</a> |
-        <a href="{{ url_for('main.dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('main.links_dashboard') }}" class="btn btn-outline-secondary btn-sm me-2">View All Links</a>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-primary btn-sm">Back to Dashboard</a>
     </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

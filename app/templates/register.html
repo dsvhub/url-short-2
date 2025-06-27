@@ -2,46 +2,78 @@
 <html>
 <head>
     <title>Register</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Register</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
+<body class="bg-light">
 
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-            {% for error in form.username.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card shadow p-4" style="width: 100%; max-width: 500px;">
+            <h2 class="text-center mb-4">Create Account</h2>
 
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-            {% for error in form.email.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
+            <form method="POST">
+                {{ form.hidden_tag() }}
 
-        <p>
-            {{ form.confirm.label }}<br>
-            {{ form.confirm(size=32) }}
-            {% for error in form.confirm.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
+                <div class="mb-3">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-control", placeholder="Enter a username") }}
+                    {% for error in form.username.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
 
-        <p>{{ form.submit() }}</p>
-    </form>
-    <p>Already have an account? <a href="{{ url_for('main.login') }}">Login here</a>.</p>
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", placeholder="Enter your email") }}
+                    {% for error in form.email.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="Create a password") }}
+                    {% for error in form.password.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.confirm.label(class="form-label") }}
+                    {{ form.confirm(class="form-control", placeholder="Confirm your password") }}
+                    {% for error in form.confirm.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-check mb-3">
+                    {{ form.remember(class="form-check-input") }}
+                    {{ form.remember.label(class="form-check-label") }}
+                </div>
+
+                <div class="d-grid">
+                    {{ form.submit(class="btn btn-success") }}
+                </div>
+            </form>
+
+            <p class="text-center mt-3">
+                Already have an account? <a href="{{ url_for('main.login') }}">Log in here</a>.
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (for dismissible alerts) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

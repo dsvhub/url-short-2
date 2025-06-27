@@ -1,6 +1,39 @@
-<form method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.original_url.label }} {{ form.original_url(size=80) }}<br>
-    {{ form.short_code.label }} {{ form.short_code(size=20) }}<br>
-    {{ form.submit() }}
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Link</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Edit Link</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="flash-{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.original_url.label }}<br>
+            {{ form.original_url(size=50) }}<br>
+            {% for error in form.original_url.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.short_code.label }}<br>
+            {{ form.short_code(size=10) }}<br>
+            {% for error in form.short_code.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <nav>
+        <a href="{{ url_for('main.links_dashboard') }}">Back to Links</a> |
+        <a href="{{ url_for('main.dashboard') }}">Back to Dashboard</a>
+    </nav>
+</body>
+</html>

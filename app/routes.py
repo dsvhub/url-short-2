@@ -7,6 +7,10 @@ from app.forms import RegistrationForm, LoginForm, UpdateProfileForm, LinkForm, 
 import string
 import random
 
+import qrcode
+from io import BytesIO
+from flask import send_file
+
 main = Blueprint('main', __name__)
 
 @main.route('/')
@@ -43,26 +47,29 @@ def shorten_url():
 @main.route('/<short_code>')
 def redirect_to_url(short_code):
     link = Link.query.filter_by(short_code=short_code).first_or_404()
+    link.clicks += 1
+    db.session.commit()
     return redirect(link.original_url)
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data)
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         flash('Account created successfully. Please log in.', 'success')
         return redirect(url_for('main.login'))
     return render_template('register.html', form=form)
 
+
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password, form.password.data):
+        if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember.data)
             return redirect(url_for('main.dashboard'))
         flash('Invalid email or password', 'danger')
@@ -134,3 +141,31 @@ def delete_link(link_id):
     db.session.commit()
     flash('Link deleted.', 'info')
     return redirect(url_for('main.links_dashboard'))
+
+
+@main.route('/qrcode/<short_code>')
+@login_required
+def generate_qrcode(short_code):
+    link = Link.query.filter_by(short_code=short_code).first_or_404()
+    short_url = url_for('main.redirect_to_url', short_code=short_code, _external=True)
+
+    img = qrcode.make(short_url)
+    buf = BytesIO()
+    img.save(buf)
+    buf.seek(0)
+
+    return send_file(buf, mimetype='image/png', as_attachment=True, download_name=f"{short_code}_qrcode.png")
+
+@main.route('/qrcode/view/<short_code>')
+@login_required
+def view_qrcode(short_code):
+    link = Link.query.filter_by(short_code=short_code).first_or_404()
+    short_url = url_for('main.redirect_to_url', short_code=short_code, _external=True)
+
+    img = qrcode.make(short_url)
+    buf = BytesIO()
+    img.save(buf)
+    buf.seek(0)
+
+    return send_file(buf, mimetype='image/png')  # No `as_attachment`
+
