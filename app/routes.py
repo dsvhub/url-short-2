@@ -11,6 +11,10 @@ import qrcode
 from io import BytesIO
 from flask import send_file
 
+import subprocess
+import os
+
+
 main = Blueprint('main', __name__)
 
 @main.route('/')
@@ -208,3 +212,23 @@ def download_qrcodes_zip():
 
     memory_file.seek(0)
     return send_file(memory_file, mimetype='application/zip', as_attachment=True, download_name='qrcodes.zip')
+
+@main.route('/backup_db')
+@login_required
+def backup_db():
+    try:
+        subprocess.run(["python", "backup_db.py"], check=True)
+        flash("Database backup uploaded to GitHub Releases.", "success")
+    except subprocess.CalledProcessError as e:
+        flash(f"Backup failed: {e}", "danger")
+    return redirect(url_for('main.links_dashboard'))
+
+@main.route('/restore_db')
+@login_required
+def restore_db():
+    try:
+        subprocess.run(["python", "restore_db.py"], check=True)
+        flash("Database restored from GitHub Releases.", "success")
+    except subprocess.CalledProcessError as e:
+        flash(f"Restore failed: {e}", "danger")
+    return redirect(url_for('main.links_dashboard'))
