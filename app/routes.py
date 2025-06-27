@@ -18,11 +18,15 @@ main = Blueprint('main', __name__)
 def dashboard():
     return render_template('dashboard.html')
 
-@main.route('/links')
+@main.route('/links_dashboard')
 @login_required
 def links_dashboard():
-    user_links = Link.query.filter_by(user_id=current_user.id).all()
-    return render_template('linkdash.html', links=user_links)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 5, type=int)
+    pagination = Link.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=per_page)
+    links = pagination.items
+    return render_template('linkdash.html', links=links, pagination=pagination)
+
 
 @main.route('/shorten', methods=['GET', 'POST'])
 @login_required
@@ -169,3 +173,38 @@ def view_qrcode(short_code):
 
     return send_file(buf, mimetype='image/png')  # No `as_attachment`
 
+@main.route('/download_csv')
+@login_required
+def download_csv():
+    import csv
+    from io import StringIO
+    links = Link.query.filter_by(user_id=current_user.id).all()
+    si = StringIO()
+    writer = csv.writer(si)
+    writer.writerow(['Original URL', 'Short Code', 'Clicks'])
+    for link in links:
+        writer.writerow([link.original_url, link.short_code, link.clicks])
+    output = si.getvalue()
+    return send_file(BytesIO(output.encode()), mimetype='text/csv', as_attachment=True, download_name='my_links.csv')
+
+
+@main.route('/download_qrcodes_zip')
+@login_required
+def download_qrcodes_zip():
+    from io import BytesIO
+    from zipfile import ZipFile
+    import qrcode
+
+    memory_file = BytesIO()
+    with ZipFile(memory_file, 'w') as zf:
+        links = Link.query.filter_by(user_id=current_user.id).all()
+        for link in links:
+            short_url = url_for('main.redirect_to_url', short_code=link.short_code, _external=True)
+            img = qrcode.make(short_url)
+            img_buffer = BytesIO()
+            img.save(img_buffer, format='PNG')
+            img_buffer.seek(0)
+            zf.writestr(f"{link.short_code}.png", img_buffer.read())
+
+    memory_file.seek(0)
+    return send_file(memory_file, mimetype='application/zip', as_attachment=True, download_name='qrcodes.zip')

@@ -2,42 +2,75 @@
 <html>
 <head>
     <title>Edit Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+    </style>
 </head>
 <body>
+
+<div class="form-container">
     <h1>Edit Profile</h1>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <p class="flash-{{ category }}">{{ message }}</p>
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
+
     <form method="POST">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=20) }}<br>
+        <div class="mb-3">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control") }}
             {% for error in form.username.errors %}
-                <span style="color:red;">{{ error }}</span>
+                <div class="text-danger">{{ error }}</div>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=50) }}<br>
+        </div>
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
             {% for error in form.email.errors %}
-                <span style="color:red;">{{ error }}</span>
+                <div class="text-danger">{{ error }}</div>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=20) }}<br>
+        </div>
+        <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
             {% for error in form.password.errors %}
-                <span style="color:red;">{{ error }}</span>
+                <div class="text-danger">{{ error }}</div>
             {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        </div>
+        <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
     </form>
-    <p><a href="{{ url_for('main.dashboard') }}">Back to Dashboard</a></p>
+
+    <div class="mt-3 text-center">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-link">Back to Dashboard</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
