@@ -213,15 +213,18 @@ def download_qrcodes_zip():
     memory_file.seek(0)
     return send_file(memory_file, mimetype='application/zip', as_attachment=True, download_name='qrcodes.zip')
 
-@main.route('/backup_db')
+@main.route('/backup_db', methods=['POST'])
 @login_required
 def backup_db():
-    try:
-        subprocess.run(["python", "backup_db.py"], check=True)
-        flash("Database backup uploaded to GitHub Releases.", "success")
-    except subprocess.CalledProcessError as e:
-        flash(f"Backup failed: {e}", "danger")
+    from backup_db import upload_db
+    asset_path = os.path.abspath('site.db')
+    success = upload_db(asset_path)
+    if success:
+        flash('✅ Database backed up to GitHub.', 'success')
+    else:
+        flash('❌ Backup failed. Check logs.', 'danger')
     return redirect(url_for('main.links_dashboard'))
+
 
 @main.route('/restore_db')
 @login_required

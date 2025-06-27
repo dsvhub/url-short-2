@@ -68,12 +68,17 @@
     </style>
 </head>
 <div class="mb-3">
-    <a href="{{ url_for('main.links_dashboard') }}" class="btn btn-outline-primary me-2">
-        <i class="bi bi-cloud-arrow-up"></i> Backup DB
-    </a>
-    <a href="{{ url_for('main.links_dashboard') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-cloud-arrow-down"></i> Restore DB
-    </a>
+    <form action="{{ url_for('main.backup_db') }}" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-outline-primary me-2">
+            <i class="bi bi-cloud-arrow-up"></i> Backup DB
+        </button>
+    </form>
+    <form action="{{ url_for('main.restore_db') }}" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-outline-secondary">
+            <i class="bi bi-cloud-arrow-down"></i> Restore DB
+        </button>
+    </form>
+
 </div>
 
 <body>
