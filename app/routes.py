@@ -10,12 +10,25 @@ import random
 import qrcode
 from io import BytesIO
 from flask import send_file
-
+import sys
 import subprocess
 import os
 
+import logging
+
+from flask import current_app
+
+
+
+from app.backup_db import upload_db
+
+from flask import Blueprint
 
 main = Blueprint('main', __name__)
+
+
+
+
 
 @main.route('/')
 @login_required
@@ -213,25 +226,38 @@ def download_qrcodes_zip():
     memory_file.seek(0)
     return send_file(memory_file, mimetype='application/zip', as_attachment=True, download_name='qrcodes.zip')
 
+
+
 @main.route('/backup_db', methods=['POST'])
 @login_required
 def backup_db():
-    from backup_db import upload_db
-    asset_path = os.path.abspath('site.db')
+    logging.info("🛠️ Entered /backup_db route")
+    try:
+        from app.backup_db import upload_db
+        logging.info("Imported upload_db successfully")
+    except Exception as e:
+        logging.error(f"Failed import: {e}", exc_info=True)
+        flash("Import error, check logs", "danger")
+        return redirect(url_for('main.links_dashboard'))
+
+    asset_path = os.path.join(current_app.instance_path, 'site.db')
     success = upload_db(asset_path)
-    if success:
-        flash('✅ Database backed up to GitHub.', 'success')
-    else:
-        flash('❌ Backup failed. Check logs.', 'danger')
+    flash('Backup succeeded' if success else 'Backup failed', 'info')
     return redirect(url_for('main.links_dashboard'))
 
 
-@main.route('/restore_db')
+@main.route('/restore_db', methods=['POST'])
 @login_required
 def restore_db():
     try:
-        subprocess.run(["python", "restore_db.py"], check=True)
-        flash("Database restored from GitHub Releases.", "success")
+        script_path = os.path.join(os.path.dirname(__file__), 'restore_db.py')
+
+        # Inherit current environment, including token
+        env = os.environ.copy()
+
+        subprocess.run([sys.executable, script_path], check=True, env=env)
+
+        flash("✅ Database restored from GitHub Releases.", "success")
     except subprocess.CalledProcessError as e:
-        flash(f"Restore failed: {e}", "danger")
+        flash(f"❌ Restore failed: {e}", "danger")
     return redirect(url_for('main.links_dashboard'))

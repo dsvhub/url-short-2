@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: url-shortener-app
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:app"
+    envVars:
+      - key: SECRET_KEY
+        value: your_secret_key
+      - key: GITHUB_TOKEN
+        value: your_github_token
+      - key: GITHUB_REPO
+        value: dsvhub/url-short-2
